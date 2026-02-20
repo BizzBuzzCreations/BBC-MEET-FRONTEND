@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@layer utilities {
+  .bg-meetflow {
+    background: radial-gradient(ellipse at 60% 40%, #e9d5ff 0%, #fce7f3 40%, #fdf2f8 100%);
+  }
+  .bg-meetflow-dark {
+    background: radial-gradient(ellipse at 60% 40%, #1e1b4b 0%, #2d1b69 40%, #1a0a2e 100%);
+  }
+}
