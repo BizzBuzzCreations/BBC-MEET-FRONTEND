@@ -64,9 +64,6 @@ export default function ScheduleMeetingModal({ onClose, onSave }) {
             const end = new Date(`${form.date}T${form.endTime}:00`);
             const duration_minutes = Math.round((end - start) / (1000 * 60));
 
-
-            const pass_otp = Math.floor(100000 + Math.random() * 900000).toString();
-
             const payload = {
                 title: form.title,
                 meeting_type: form.meeting_type,
@@ -77,7 +74,7 @@ export default function ScheduleMeetingModal({ onClose, onSave }) {
                 description: form.description,
             };
 
-            await api.post('/api/meet/', payload);
+            await api.createMeeting(payload);
             if (onSave) onSave();
             onClose();
         } catch (err) {

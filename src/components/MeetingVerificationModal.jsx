@@ -57,8 +57,22 @@ export default function MeetingVerificationModal({ meeting, onClose, onVerified 
             return;
         }
 
-        if (onVerified) onVerified(meeting.id);
-        onClose();
+        setVerifying(true);
+        try {
+            // Upload the photo blob
+            await api.uploadPhoto(meeting.id, capturedImage);
+
+            if (onVerified) onVerified(meeting.id);
+            onClose();
+        } catch (err) {
+            console.error('Photo upload failed:', err);
+            setError(err.message || 'Photo upload failed. You can skip for now or try again.');
+            // Allow proceeding if upload fails (optional depending on business logic)
+            // if (onVerified) onVerified(meeting.id);
+            // onClose();
+        } finally {
+            setVerifying(false);
+        }
     };
 
     const handleResend = async () => {
@@ -77,8 +91,11 @@ export default function MeetingVerificationModal({ meeting, onClose, onVerified 
     };
 
     const handleImageCapture = () => {
-
-        setCapturedImage('https://via.placeholder.com/400x300.png?text=Captured+Verification+Image');
+        // In a real app, this would capture a Blob from a <video> or <canvas>
+        // Here we simulate a simple blob for the uploaded photo
+        const mockBlob = new Blob(["mock-image-content"], { type: "image/png" });
+        setCapturedImage(mockBlob);
+        setResendStatus('Photo Captured! Click finish below.');
     };
 
     return (
@@ -147,7 +164,12 @@ export default function MeetingVerificationModal({ meeting, onClose, onVerified 
                             </div>
                             <div className="aspect-video bg-gray-100 dark:bg-gray-900 rounded-2xl sm:rounded-[2rem] border-2 border-dashed border-gray-300 dark:border-gray-700 flex flex-col items-center justify-center relative overflow-hidden group">
                                 {capturedImage ? (
-                                    <img src={capturedImage} alt="Captured" className="w-full h-full object-cover" />
+                                    <img
+                                        src={URL.createObjectURL(capturedImage)}
+                                        alt="Captured"
+                                        className="w-full h-full object-cover"
+                                        onLoad={(e) => URL.revokeObjectURL(e.target.src)}
+                                    />
                                 ) : (
                                     <>
                                         <svg className="w-10 h-10 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>

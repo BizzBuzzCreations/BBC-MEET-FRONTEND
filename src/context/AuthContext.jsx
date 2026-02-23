@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
                     logout();
                 } else {
                     try {
-                        const response = await api.get('/api/auth/profile/');
+                        const response = await api.getProfile();
                         setCurrentUser(response.data);
                     } catch (error) {
                         console.error('Profile fetch failed:', error);
@@ -62,7 +62,7 @@ export function AuthProvider({ children }) {
 
     const register = async (userData) => {
         try {
-            const response = await api.post('/api/auth/create/', {
+            const response = await api.register({
                 full_name: userData.name,
                 username: userData.username,
                 email: userData.email,
@@ -76,7 +76,7 @@ export function AuthProvider({ children }) {
 
     const login = async (username, password) => {
         try {
-            const response = await api.post('/api/auth/login/', { username, password });
+            const response = await api.login(username, password);
             localStorage.setItem('mf_access', response.access);
             localStorage.setItem('mf_refresh', response.refresh);
             setCurrentUser(response.data);
