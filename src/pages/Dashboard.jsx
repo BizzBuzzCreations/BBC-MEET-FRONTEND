@@ -90,7 +90,7 @@ export default function Dashboard() {
     const fetchMeetings = async () => {
         try {
             setFetching(true);
-            const data = await api.get('/api/meet/');
+            const data = await api.getMeetings();
             // Backend returns array of meetings. Ensure they have IDs for UI tracking.
             const processed = (Array.isArray(data) ? data : []).map((m, idx) => ({
                 ...m,
@@ -122,7 +122,7 @@ export default function Dashboard() {
     const handleDeleteMeeting = async (id) => {
         if (!window.confirm('Are you sure you want to delete this meeting?')) return;
         try {
-            await api.delete(`/api/meet/${id}/`);
+            await api.deleteMeeting(id);
             fetchMeetings();
         } catch (error) {
             console.error('Failed to delete meeting:', error);

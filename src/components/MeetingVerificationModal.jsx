@@ -4,7 +4,7 @@ import api from "../services/api";
 export default function MeetingVerificationModal({
   meeting,
   onClose,
-  onVerified,
+  onVerified,    
 }) {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
@@ -97,9 +97,7 @@ export default function MeetingVerificationModal({
         {/* Header */}
         <div className="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
-              Meeting Verification
-            </h2>
+            <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight"></h2>
             <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em]">
               {meeting?.title}
             </p>

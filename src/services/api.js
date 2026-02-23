@@ -3,12 +3,12 @@ const BASE_URL = "https://r885rw6c-8000.inc1.devtunnels.ms";
 const api = {
   onUnauthorized: null,
 
-  async request(endpoint, options = {}) {
-    const token = localStorage.getItem("mf_access");
-    const headers = {
-      "Content-Type": "application/json",
-      ...options.headers,
-    };
+    async request(endpoint, options = {}) {
+        const token = localStorage.getItem('mf_access');
+        const headers = {
+            'Content-Type': 'application/json',
+            ...options.headers,
+        };
 
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
@@ -65,26 +65,21 @@ const api = {
     return this.request(endpoint, { ...options, method: "DELETE" });
   },
 
-  markInProgress(uid) {
-    return this.post(`/api/meet/${uid}/mark-in-progress/`, {});
-  },
+    markInProgress(uid) {
+        return this.post(`/api/meet/${uid}/mark-in-progress/`, {});
+    },
 
-  markCompleted(uid, otp = null) {
-    const body = otp ? { otp_code: otp } : undefined;
-    return this.post(`/api/meet/${uid}/mark-completed/`, body);
-  },
+    markCompleted(uid, otp) {
+        return this.post(`/api/meet/${uid}/mark-completed/`, { otp_code: otp });
+    },
 
-  generateOTP(uid) {
-    return this.post(`/api/meet/${uid}/generate-otp/`, {});
-  },
+    resendOTP(uid) {
+        return this.post(`/api/meet/${uid}/resend-otp/`, {});
+    },
 
-  resendOTP(uid) {
-    return this.post(`/api/meet/${uid}/resend-otp/`, {});
-  },
-
-  markCancelled(uid) {
-    return this.post(`/api/meet/${uid}/mark-cancelled/`, {});
-  },
+    markCancelled(uid) {
+        return this.post(`/api/meet/${uid}/mark-cancelled/`, {});
+    },
 };
 
 export default api;
