@@ -1,85 +1,90 @@
-const BASE_URL = 'https://r885rw6c-8000.inc1.devtunnels.ms';
+const BASE_URL = "https://r885rw6c-8000.inc1.devtunnels.ms";
 
 const api = {
-    onUnauthorized: null,
+  onUnauthorized: null,
 
-    async request(endpoint, options = {}) {
-        const token = localStorage.getItem('mf_access');
-        const headers = {
-            'Content-Type': 'application/json',
-            ...options.headers,
-        };
+  async request(endpoint, options = {}) {
+    const token = localStorage.getItem("mf_access");
+    const headers = {
+      "Content-Type": "application/json",
+      ...options.headers,
+    };
 
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const config = {
+      ...options,
+      headers,
+    };
+
+    try {
+      const response = await fetch(`${BASE_URL}${endpoint}`, config);
+
+      if (response.status === 401) {
+        if (this.onUnauthorized) {
+          this.onUnauthorized();
         }
+        throw new Error("Session expired. Please login again.");
+      }
 
-        const config = {
-            ...options,
-            headers,
-        };
+      const data = await response.json();
 
-        try {
-            const response = await fetch(`${BASE_URL}${endpoint}`, config);
+      if (!response.ok) {
+        throw new Error(data.message || data.detail || "Something went wrong");
+      }
 
-            if (response.status === 401) {
-                if (this.onUnauthorized) {
-                    this.onUnauthorized();
-                }
-                throw new Error('Session expired. Please login again.');
-            }
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
 
-            const data = await response.json();
+  get(endpoint, options = {}) {
+    return this.request(endpoint, { ...options, method: "GET" });
+  },
 
-            if (!response.ok) {
-                throw new Error(data.message || data.detail || 'Something went wrong');
-            }
+  post(endpoint, body, options = {}) {
+    return this.request(endpoint, {
+      ...options,
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  },
 
-            return data;
-        } catch (error) {
-            throw error;
-        }
-    },
+  put(endpoint, body, options = {}) {
+    return this.request(endpoint, {
+      ...options,
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+  },
 
-    get(endpoint, options = {}) {
-        return this.request(endpoint, { ...options, method: 'GET' });
-    },
+  delete(endpoint, options = {}) {
+    return this.request(endpoint, { ...options, method: "DELETE" });
+  },
 
-    post(endpoint, body, options = {}) {
-        return this.request(endpoint, {
-            ...options,
-            method: 'POST',
-            body: JSON.stringify(body),
-        });
-    },
+  markInProgress(uid) {
+    return this.post(`/api/meet/${uid}/mark-in-progress/`, {});
+  },
 
-    put(endpoint, body, options = {}) {
-        return this.request(endpoint, {
-            ...options,
-            method: 'PUT',
-            body: JSON.stringify(body),
-        });
-    },
+  markCompleted(uid, otp = null) {
+    const body = otp ? { otp_code: otp } : undefined;
+    return this.post(`/api/meet/${uid}/mark-completed/`, body);
+  },
 
-    delete(endpoint, options = {}) {
-        return this.request(endpoint, { ...options, method: 'DELETE' });
-    },
+  generateOTP(uid) {
+    return this.post(`/api/meet/${uid}/generate-otp/`, {});
+  },
 
-    markInProgress(uid) {
-        return this.post(`/api/meet/${uid}/mark-in-progress/`, {});
-    },
+  resendOTP(uid) {
+    return this.post(`/api/meet/${uid}/resend-otp/`, {});
+  },
 
-    markCompleted(uid, otp) {
-        return this.post(`/api/meet/${uid}/mark-completed/`, { otp_code: otp });
-    },
-
-    resendOTP(uid) {
-        return this.post(`/api/meet/${uid}/resend-otp/`, {});
-    },
-
-    markCancelled(uid) {
-        return this.post(`/api/meet/${uid}/mark-cancelled/`, {});
-    },
+  markCancelled(uid) {
+    return this.post(`/api/meet/${uid}/mark-cancelled/`, {});
+  },
 };
 
 export default api;
