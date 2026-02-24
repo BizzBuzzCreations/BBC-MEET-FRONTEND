@@ -3,12 +3,12 @@ const BASE_URL = "https://r885rw6c-8000.inc1.devtunnels.ms";
 const api = {
   onUnauthorized: null,
 
-    async request(endpoint, options = {}) {
-        const token = localStorage.getItem('mf_access');
-        const headers = {
-            'Content-Type': 'application/json',
-            ...options.headers,
-        };
+  async request(endpoint, options = {}) {
+    const token = localStorage.getItem("mf_access");
+    const headers = {
+      "Content-Type": "application/json",
+      ...options.headers,
+    };
 
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
@@ -65,21 +65,72 @@ const api = {
     return this.request(endpoint, { ...options, method: "DELETE" });
   },
 
-    markInProgress(uid) {
-        return this.post(`/api/meet/${uid}/mark-in-progress/`, {});
-    },
+  // Auth
+  login(username, password) {
+    return this.post("/api/auth/login/", { username, password });
+  },
 
-    markCompleted(uid, otp) {
-        return this.post(`/api/meet/${uid}/mark-completed/`, { otp_code: otp });
-    },
+  register(data) {
+    return this.post("/api/auth/create/", data);
+  },
 
-    resendOTP(uid) {
-        return this.post(`/api/meet/${uid}/resend-otp/`, {});
-    },
+  getProfile() {
+    return this.get("/api/auth/profile/");
+  },
 
-    markCancelled(uid) {
-        return this.post(`/api/meet/${uid}/mark-cancelled/`, {});
-    },
+  // Meetings CRUD
+  getMeetings() {
+    return this.get("/api/meet/");
+  },
+
+  getMeeting(uid) {
+    return this.get(`/api/meet/${uid}/`);
+  },
+
+  createMeeting(data) {
+    return this.post("/api/meet/", data);
+  },
+
+  updateMeeting(uid, data) {
+    return this.put(`/api/meet/${uid}/`, data);
+  },
+
+  deleteMeeting(uid) {
+    return this.delete(`/api/meet/${uid}/`);
+  },
+
+  markInProgress(uid) {
+    return this.post(`/api/meet/${uid}/mark-in-progress/`, {});
+  },
+
+  markCompleted(uid, otp = null) {
+    const body = otp ? { otp_code: otp } : undefined;
+    return this.post(`/api/meet/${uid}/mark-completed/`, body);
+  },
+
+  generateOTP(uid) {
+    return this.post(`/api/meet/${uid}/generate-otp/`, {});
+  },
+
+  resendOTP(uid) {
+    return this.post(`/api/meet/${uid}/resend-otp/`, {});
+  },
+
+  markCancelled(uid) {
+    return this.post(`/api/meet/${uid}/mark-cancelled/`, {});
+  },
+
+  uploadPhoto(uid, file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    return this.request(`/api/meet/${uid}/upload-photo/`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        // Fetch will set Content-Type correctly with boundary if we omit it
+      },
+    });
+  },
 };
 
 export default api;
