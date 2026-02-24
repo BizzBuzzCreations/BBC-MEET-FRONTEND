@@ -64,7 +64,7 @@ export default function MeetingVerificationModal({
       setError("Please upload a photo to finish");
       return;
     }
-
+    const res = await api.uploadPhoto(meeting.uid, imageFile);
     // Yaha agar backend pe upload karna ho to imageFile send kar sakte ho
 
     if (onVerified) onVerified(meeting.id);
@@ -186,6 +186,7 @@ export default function MeetingVerificationModal({
                   className="hidden"
                 />
               </div>
+
 
               {capturedImage && (
                 <button
