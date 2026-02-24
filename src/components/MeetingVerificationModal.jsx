@@ -104,7 +104,6 @@ export default function MeetingVerificationModal({
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
       <div className="bg-white dark:bg-gray-950 w-full max-w-md rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
-
         {/* Header */}
         <div className="px-8 py-6 border-b flex justify-between items-center">
           <h2 className="font-bold text-lg">{meeting?.title}</h2>
@@ -112,7 +111,6 @@ export default function MeetingVerificationModal({
         </div>
 
         <div className="p-6 space-y-6">
-
           {/* STEP 1 */}
           {step === 1 ? (
             <>
@@ -127,9 +125,7 @@ export default function MeetingVerificationModal({
                 type="text"
                 maxLength={6}
                 value={otp}
-                onChange={(e) =>
-                  setOtp(e.target.value.replace(/\D/g, ""))
-                }
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
                 placeholder="000000"
                 className="w-full text-center text-3xl font-bold tracking-widest py-5 bg-gray-100 border-2 rounded-2xl outline-none"
               />
@@ -162,7 +158,6 @@ export default function MeetingVerificationModal({
               </div>
 
               <div className="aspect-video bg-gray-100 rounded-2xl border-2 border-dashed flex items-center justify-center relative overflow-hidden">
-
                 {capturedImage ? (
                   <img
                     src={capturedImage}
@@ -186,7 +181,6 @@ export default function MeetingVerificationModal({
                   className="hidden"
                 />
               </div>
-
 
               {capturedImage && (
                 <button

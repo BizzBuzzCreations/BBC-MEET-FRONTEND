@@ -121,14 +121,20 @@ const api = {
   },
 
   uploadPhoto(uid, file) {
+    const token = localStorage.getItem("mf_access");
+    const headers = {};
+
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const formData = new FormData();
     formData.append("file", file);
-    return this.request(`/api/meet/${uid}/upload-photo/`, {
+
+    return fetch(`${BASE_URL}/api/meet/${uid}/upload-photo/`, {
       method: "POST",
       body: formData,
-      headers: {
-        // Fetch will set Content-Type correctly with boundary if we omit it
-      },
+      headers,
     });
   },
 };
