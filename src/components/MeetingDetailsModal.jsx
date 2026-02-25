@@ -10,6 +10,28 @@ export default function MeetingDetailsModal({
   const [localFlowStep, setLocalFlowStep] = useState("initial");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const baseURL = "https://r885rw6c-8000.inc1.devtunnels.ms";
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  const handleChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!image) return;
+    try {
+      const res = await api.uploadPhoto(meeting.uid, image);
+      window.location.reload();
+      onClose();
+    } catch (err) {
+      console.error("Failed to upload photo:", err);
+    }
+  };
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -65,7 +87,7 @@ export default function MeetingDetailsModal({
 
     onClose();
     try {
-      await api.markCancelled(meeting.id);
+      await api.markCancelled(meeting.uid);
       if (onStatusUpdate) onStatusUpdate(meeting.id, "cancelled");
     } catch (error) {
       console.error("Failed to cancel meeting (silent):", error);
@@ -184,7 +206,7 @@ export default function MeetingDetailsModal({
                   ? "💻 Online"
                   : `🤝 ${meeting.meeting_type?.replace(/[-_]/g, " ")}`}
               </span>
-              {meeting.is_verified && (
+              {meeting.status === "completed" && (
                 <span className="px-3 py-1 bg-green-100 dark:bg-green-900/40 text-green-600 text-[10px] font-black rounded-lg uppercase tracking-widest flex items-center gap-1">
                   <svg
                     className="w-3 h-3"
@@ -306,6 +328,74 @@ export default function MeetingDetailsModal({
               </p>
             </div>
           </div>
+
+          {/* Image */}
+
+          {meeting.status === "completed" &&
+            (meeting.photos.length > 0 ? (
+              <>
+                <img
+                  src={baseURL + meeting.photos[0].file}
+                  className="w-full h-[300px] object-cover rounded-lg mt-2"
+                  alt="Meeting"
+                />
+              </>
+            ) : (
+              <div
+                style={{
+                  maxWidth: "400px",
+                  margin: "20px auto",
+                  textAlign: "center",
+                }}
+              >
+                <input
+                  type="file"
+                  id="photo"
+                  accept="image/*"
+                  onChange={handleChange}
+                  style={{
+                    maxWidth: "250px",
+                    width: "100%",
+                    padding: "10px",
+                    border: "2px dashed #6c63ff",
+                    borderRadius: "8px",
+                    backgroundColor: "#f9f9ff",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                  }}
+                />
+                <button
+                  onClick={handleUpload}
+                  style={{
+                    display: "block",
+                    margin: "20px auto 0",
+                    padding: "12px 20px",
+                    backgroundColor: "#6c63ff",
+                    color: "#fff",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontWeight: "500",
+                  }}
+                >
+                  Upload Photo
+                </button>
+                {preview && (
+                  <div>
+                    <img
+                      src={preview}
+                      alt="Preview"
+                      style={{
+                        width: "40%",
+                        margin: "0 auto",
+                        height: "auto",
+                        borderRadius: "10px",
+                        marginTop: "10px",
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
         </div>
 
         {renderFooter()}

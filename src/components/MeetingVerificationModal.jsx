@@ -12,23 +12,8 @@ export default function MeetingVerificationModal({
   const [step, setStep] = useState(1);
   const [capturedImage, setCapturedImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
-  const [resendCooldown, setResendCooldown] = useState(0);
-  const [resendStatus, setResendStatus] = useState("");
 
   const fileInputRef = useRef(null);
-
-  // Cooldown Timer
-  useEffect(() => {
-    let timer;
-    if (resendCooldown > 0) {
-      timer = setInterval(() => {
-        setResendCooldown((prev) => prev - 1);
-      }, 1000);
-    } else {
-      setResendStatus("");
-    }
-    return () => clearInterval(timer);
-  }, [resendCooldown]);
 
   // Prevent background scroll
   useEffect(() => {
@@ -71,20 +56,6 @@ export default function MeetingVerificationModal({
     onClose();
   };
 
-  const handleResend = async () => {
-    if (resendCooldown > 0) return;
-    setResendStatus("Sending...");
-    setError("");
-    try {
-      await api.resendOTP(meeting.id);
-      setResendStatus("Sent!");
-      setResendCooldown(60);
-    } catch (err) {
-      setError(err.message || "Failed to resend OTP.");
-      setResendStatus("");
-    }
-  };
-
   // Handle File Upload
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -119,6 +90,7 @@ export default function MeetingVerificationModal({
                 <p className="text-sm text-gray-500">
                   Please enter the 6-digit code.
                 </p>
+                
               </div>
 
               <input
@@ -133,19 +105,6 @@ export default function MeetingVerificationModal({
               {error && (
                 <p className="text-xs text-red-500 text-center">{error}</p>
               )}
-
-              <button
-                type="button"
-                onClick={handleResend}
-                disabled={resendCooldown > 0}
-                className="text-xs text-blue-600 underline text-center"
-              >
-                {resendCooldown > 0
-                  ? `Resend in ${resendCooldown}s`
-                  : resendStatus === "Sent!"
-                    ? "✅ Code Sent"
-                    : "Resend OTP"}
-              </button>
             </>
           ) : (
             /* STEP 2 */
