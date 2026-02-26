@@ -157,7 +157,7 @@ export default function MeetingDetailsModal({
                 {loading ? "..." : "▶ In Progress"}
               </button>
               <button
-                onClick={handleCancel}
+                onClick={() => onClose()}
                 disabled={loading}
                 className="px-8 py-5 bg-red-50 text-red-600 font-black rounded-3xl hover:bg-red-100 transition-all uppercase tracking-widest text-sm disabled:opacity-50"
               >

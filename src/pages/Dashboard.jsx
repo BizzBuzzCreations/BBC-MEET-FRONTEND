@@ -580,6 +580,23 @@ export default function Dashboard() {
                             </svg>
                           </div>
                         )}
+                        {m.status === "cancelled" && (
+                          <div className="w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg shadow-red-500/30 flex-shrink-0">
+                            <svg
+                              className="w-3.5 h-3.5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={4}
+                                d="M6 6L18 18M6 18L18 6"
+                              />
+                            </svg>
+                          </div>
+                        )}
                       </div>
 
                       <div className="flex flex-wrap gap-x-4 gap-y-2 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">

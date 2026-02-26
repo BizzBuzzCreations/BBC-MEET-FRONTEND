@@ -78,7 +78,9 @@ export default function MeetingVerificationModal({
         {/* Header */}
         <div className="px-8 py-6 border-b flex justify-between items-center">
           <h2 className="font-bold text-lg">{meeting?.title}</h2>
-          <button onClick={onClose}>✕</button>
+          <button onClick={onClose} disabled={step === 2}>
+            ✕
+          </button>
         </div>
 
         <div className="p-6 space-y-6">
@@ -90,7 +92,6 @@ export default function MeetingVerificationModal({
                 <p className="text-sm text-gray-500">
                   Please enter the 6-digit code.
                 </p>
-                
               </div>
 
               <input
