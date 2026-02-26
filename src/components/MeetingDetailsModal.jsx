@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
+import { toast, Bounce } from "react-toastify";
 
 export default function MeetingDetailsModal({
   meeting,
@@ -10,9 +11,9 @@ export default function MeetingDetailsModal({
   const [localFlowStep, setLocalFlowStep] = useState("initial");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const baseURL = "https://r885rw6c-8000.inc1.devtunnels.ms";
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const baseURL = "http://meetapi.bizzbuzzcreations.com/";
 
   const handleChange = async (e) => {
     const file = e.target.files[0];
@@ -51,14 +52,36 @@ export default function MeetingDetailsModal({
   if (!meeting) return null;
 
   const handleMarkInProgress = async () => {
-    setLocalFlowStep("completed_choice");
-
     if (meeting.status === "scheduled") {
       setLoading(true);
       try {
         await api.markInProgress(meeting.uid);
+        toast.success("Meeting started successfully!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+        setLocalFlowStep("completed_choice");
+
         if (onStatusUpdate) onStatusUpdate(meeting.id, "in_progress");
       } catch (error) {
+        toast.error("Failed to start meeting!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
         console.error("Failed to start meeting (proceeding anyway):", error);
       } finally {
         setLoading(false);
@@ -69,6 +92,17 @@ export default function MeetingDetailsModal({
   const handleMeetingCompletion = async (uid) => {
     try {
       const res = await api.markCompleted(uid);
+      toast.success("OTP Sent successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
       const data = await res.json();
       if (onStatusUpdate) onStatusUpdate(meeting.id, "completed");
       if (!data.status) {
@@ -89,8 +123,30 @@ export default function MeetingDetailsModal({
     onClose();
     try {
       await api.markCancelled(meeting.uid);
+      toast.success("Meeting cancelled successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
       if (onStatusUpdate) onStatusUpdate(meeting.id, "cancelled");
     } catch (error) {
+      toast.error("Failed to cancel meeting!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
       console.error("Failed to cancel meeting (silent)", error);
     }
   };
@@ -134,20 +190,12 @@ export default function MeetingDetailsModal({
         </div>
       );
     }
-
+    console.log(localFlowStep);
     return (
       <div className="p-8 border-t border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-900/30">
         <div className="flex flex-col gap-3">
-          {localFlowStep === "initial" && (
-            <button
-              onClick={() => setLocalFlowStep("in_progress_choice")}
-              className="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-3xl transition-all shadow-xl shadow-blue-500/30 uppercase tracking-widest text-sm"
-            >
-              📅 Scheduled
-            </button>
-          )}
-
-          {localFlowStep === "in_progress_choice" && (
+          {(localFlowStep === "initial" ||
+            localFlowStep === "in_progress_choice") && (
             <div className="flex gap-3">
               <button
                 onClick={handleMarkInProgress}

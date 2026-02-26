@@ -8,7 +8,7 @@ import MeetingCompletionModal from "../components/MeetingCompletionModal";
 import Logo from "../components/Logo";
 import Footer from "../components/Footer";
 import api from "../services/api";
-const baseURL = "https://r885rw6c-8000.inc1.devtunnels.ms";
+import { toast, Bounce } from "react-toastify";
 
 const NAV_ITEMS = [
   {
@@ -166,6 +166,17 @@ export default function Dashboard() {
 
   const handleLogout = () => {
     logout();
+    toast.error("You have been logged out!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
     navigate("/login");
   };
 
@@ -638,13 +649,6 @@ export default function Dashboard() {
                           </span>
                         )}
                       </div>
-                      {m.photos.length > 0 && (
-                        <img
-                          src={baseURL + m.photos[0].file}
-                          className="w-full h-24 object-cover rounded-lg mt-2"
-                          alt="Meeting"
-                        />
-                      )}
                     </div>
 
                     <div className="flex flex-row items-center justify-between gap-3 w-full sm:w-auto self-stretch pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-gray-800">

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import api from "../services/api";
+import { toast, Bounce } from "react-toastify";
 
 export default function MeetingVerificationModal({
   meeting,
@@ -35,9 +36,30 @@ export default function MeetingVerificationModal({
 
       try {
         await api.markCompleted(meeting.uid, otp);
+        toast.success("Meeting verified successfully!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
         setStep(2);
       } catch (err) {
-        setError(err.message || "Invalid OTP");
+        toast.error("Invalid OTP", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       } finally {
         setVerifying(false);
       }
@@ -49,7 +71,35 @@ export default function MeetingVerificationModal({
       setError("Please upload a photo to finish");
       return;
     }
-    const res = await api.uploadPhoto(meeting.uid, imageFile);
+    try {
+      const res = await api.uploadPhoto(meeting.uid, imageFile);
+      toast.success("Photo uploaded successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } catch (err) {
+      toast.error("Failed to upload photo", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
     // Yaha agar backend pe upload karna ho to imageFile send kar sakte ho
 
     if (onVerified) onVerified(meeting.id);

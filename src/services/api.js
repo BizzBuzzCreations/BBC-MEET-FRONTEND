@@ -1,4 +1,4 @@
-const BASE_URL = "https://r885rw6c-8000.inc1.devtunnels.ms";
+const BASE_URL = "http://meetapi.bizzbuzzcreations.com";
 
 const api = {
   onUnauthorized: null,
