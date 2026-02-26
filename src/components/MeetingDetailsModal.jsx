@@ -91,7 +91,7 @@ export default function MeetingDetailsModal({
       await api.markCancelled(meeting.uid);
       if (onStatusUpdate) onStatusUpdate(meeting.id, "cancelled");
     } catch (error) {
-      console.error("Failed to cancel meeting (silent):", error);
+      console.error("Failed to cancel meeting (silent)", error);
     }
   };
 
