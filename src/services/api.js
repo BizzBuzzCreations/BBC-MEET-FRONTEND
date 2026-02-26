@@ -1,4 +1,4 @@
-const BASE_URL = "http://meetapi.bizzbuzzcreations.com";
+const BASE_URL = "https://meetapi.bizzbuzzcreations.com";
 
 const api = {
   onUnauthorized: null,

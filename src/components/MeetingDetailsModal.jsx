@@ -13,7 +13,7 @@ export default function MeetingDetailsModal({
   const [message, setMessage] = useState("");
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
-  const baseURL = "http://meetapi.bizzbuzzcreations.com/";
+  const baseURL = "https://meetapi.bizzbuzzcreations.com/";
 
   const handleChange = async (e) => {
     const file = e.target.files[0];
