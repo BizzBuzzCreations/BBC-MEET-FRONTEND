@@ -70,6 +70,7 @@ export default function MeetingDetailsModal({
     try {
       const res = await api.markCompleted(uid);
       const data = await res.json();
+      if (onStatusUpdate) onStatusUpdate(meeting.id, "completed");
       if (!data.status) {
         throw new Error(
           data.message || data.detail || "Failed to mark meeting as completed",
